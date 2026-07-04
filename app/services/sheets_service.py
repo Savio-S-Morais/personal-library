@@ -12,7 +12,7 @@ def get_sheet_cliente():
     scopes = ["https://www.googleapis.com/auth/spreadsheets"]
 
     env = os.getenv("FLASK_ENV", "development")
-    creds_path = os.getenv("GOOGLE_SHEETS_CREDENTIALS_PATH_DEV") if env == "development" else os.getenv("GOOGLE_SHEETS_CREDENTIALS_PATH_PROD")
+    creds_path = os.getenv("GOOGLE_SHEETS_CREDENTIALS_PATH") if env == "development" else os.getenv("GOOGLE_SHEETS_CREDENTIALS_PATH")
     if not creds_path:
         raise RuntimeError("GOOGLE_SHEETS_CREDENTIALS_PATH environment variable is not defined")
 
@@ -28,7 +28,7 @@ def get_worksheet(sheet_name):
     client = get_sheet_cliente()
 
     env = os.getenv("FLASK_ENV", "development")
-    spreadsheet_id = os.getenv("SPREADSHEET_ID_DEV") if env == "development" else os.getenv("SPREADSHEET_ID_PROD")
+    spreadsheet_id = os.getenv("SPREADSHEET_ID") if env == "development" else os.getenv("SPREADSHEET_ID")
     if not spreadsheet_id:
         raise RuntimeError("Spreadsheet ID environment variable is not defined")
 
