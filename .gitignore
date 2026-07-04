@@ -1,5 +1,6 @@
 # Variáveis de ambiente
 .env*
+credentials/
 
 # Ambiente virtual
 .venv/
@@ -7,5 +8,6 @@ venv/
 
 # Byte-compiled / cache
 __pycache__/
+.pytest_cache/
 *.py[cod]
 *$py.class
