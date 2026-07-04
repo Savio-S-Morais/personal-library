@@ -30,8 +30,12 @@ Um projeto pessoal focado no controle, organização e visualização de acervos
 
 - **Frontend:** Inicialmente desenvolvido com HTML5, CSS3 e JavaScript Vanilla (com planos futuros de evolução da interface).
 - **Backend:** Flask (Python) para o gerenciamento de rotas, lógica de negócios e segurança.
-- **Banco de Dados:** PostgreSQL para o armazenamento persistente e relacional dos dados.
-- **APIs Externas:** Integração com a [Open Library Covers API](https://openlibrary.org/dev/docs/api/covers) para renderização automática das capas dos livros via ISBN.
+- **Banco de Dados:**
+  - Inicialmente: Google Sheets integrados via API.
+  - Evolução: PostgreSQL para o armazenamento persistente e relacional dos dados.
+- **APIs Externas:**
+  - Integração com a [Open Library Covers API](https://openlibrary.org/dev/docs/api/covers) para renderização automática das capas dos livros via ISBN.
+  - Google Sheets API para leitura, atualização e adição de novos dados.
 
 ### Padrões e Metodologias de Desenvolvimento
 
@@ -43,6 +47,8 @@ Um projeto pessoal focado no controle, organização e visualização de acervos
 ---
 
 ## 📐 Modelagem do Banco de Dados (DER)
+
+> Será utilizado futuramente quando ocorrer a migração Google Sheets para PostgreSQL
 
 O banco de dados é composto por tabelas normalizadas que garantem a integridade referencial do acervo.
 
