@@ -7,3 +7,4 @@ pytest-asyncio==1.4.0
 gspread==6.2.1
 google-auth==2.55.1
 jsonify==0.5
+dotenv==0.9.9
