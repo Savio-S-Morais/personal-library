@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from ..services.sheets_service import get_worksheet
+from ..services.api_planilhas import verificar_planilha_de_trabalho
 from markupsafe import escape
 
 main_bp = Blueprint('main', __name__, template_folder='templates', static_folder='static', static_url_path='/app/static')
@@ -10,7 +10,7 @@ def home():
 
 @main_bp.route('/salvar', methods=['GET', 'POST'])
 def save_data():
-    sheet = get_worksheet("Livro")
+    sheet = verificar_planilha_de_trabalho("Livro")
     # Exemplo de escrita
     sheet.append_row(["Dado 1", "Dado 2"])
     
@@ -22,4 +22,4 @@ def save_data():
 @main_bp.route("/<string:url>")
 def error(url):
     url = escape(url)
-    return f"Sorry, but the page <i>'{url}'</i> doesn't exit", 400
+    return f"Foi mal, mas a págica <i>'{url}'</i> não existe", 400
