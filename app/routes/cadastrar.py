@@ -1,7 +1,9 @@
+from datetime import datetime
 from flask import Blueprint, render_template, request, flash, redirect
 from ..services.autor_service import adicionar_autor
 from ..services.editora_service import adicionar_editora
 from ..services.categoria_service import adicionar_categoria
+from ..services.livro_service import adicionar_livro, obter_opcoes_selecao
 
 cadastrar_bp = Blueprint('cadastrar', __name__, template_folder='templates', static_folder='static', static_url_path='/app/static')
 
@@ -56,3 +58,22 @@ def cadastrar_categoria():
         return redirect("/cadastrar/categoria")
     
     return render_template('forms_categoria.html')
+
+@cadastrar_bp.route("/cadastrar/livro", methods=['GET', 'POST'])
+def cadastrar_livro():
+    if request.method == 'POST':
+        sucesso, mensagem = adicionar_livro(request.form)
+        if sucesso: flash("Livro cadastrado!", "success")
+        else: flash(mensagem, "danger")
+        
+        return redirect("/cadastrar/livro")
+        
+    ano_atual =  {"ano_atual": datetime.now().year}
+        
+    # Carregar opções para o formulário
+    context = {
+        "autores": obter_opcoes_selecao("Autor"),
+        "editoras": obter_opcoes_selecao("Editora"),
+        "acervos": obter_opcoes_selecao("Acervo")
+    }
+    return render_template('forms_livro.html', **context, **ano_atual)
