@@ -30,6 +30,9 @@
             <select name="acervo" required>
                 {% for acervo in acervos %}<option>{{ acervo }}</option>{% endfor %}
             </select>
+            <select name="categoria[]" multiple required class="form-control">
+                {% for categoria in categorias %}<option>{{ categoria }}</option>{% endfor %}
+            </select>
 
             <button type="submit">Cadastrar Livro</button>
         </form>

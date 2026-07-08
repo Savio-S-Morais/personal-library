@@ -4,6 +4,7 @@ from ..services.autor_service import adicionar_autor
 from ..services.editora_service import adicionar_editora
 from ..services.categoria_service import adicionar_categoria
 from ..services.livro_service import adicionar_livro, obter_opcoes_selecao
+from ..services.livro_categoria_service import vincular_livro_categoria
 
 cadastrar_bp = Blueprint('cadastrar', __name__, template_folder='templates', static_folder='static', static_url_path='/app/static')
 
@@ -62,18 +63,31 @@ def cadastrar_categoria():
 @cadastrar_bp.route("/cadastrar/livro", methods=['GET', 'POST'])
 def cadastrar_livro():
     if request.method == 'POST':
-        sucesso, mensagem = adicionar_livro(request.form)
-        if sucesso: flash("Livro cadastrado!", "success")
-        else: flash(mensagem, "danger")
-        
+        sucesso, resultado = adicionar_livro(request.form)        
+        if sucesso:
+            id_livro = resultado
+            ids_categorias = request.form.getlist('categoria[]')
+            
+            erros = []
+            for id_categoria in ids_categorias:
+                if not vincular_livro_categoria(id_livro, id_categoria):
+                    erros.append(id_categoria)
+            
+            if not erros:
+                flash("Livro cadastrado com sucesso!", "success")
+            else:
+                flash(f"Erro ao vincular categorias: {', '.join(erros)}", "warning")
+        else:
+            flash(resultado, "danger")
+            
         return redirect("/cadastrar/livro")
-        
-    ano_atual =  {"ano_atual": datetime.now().year}
-        
+    
     # Carregar opções para o formulário
+    ano_atual =  {"ano_atual": datetime.now().year}  
     context = {
         "autores": obter_opcoes_selecao("Autor"),
         "editoras": obter_opcoes_selecao("Editora"),
-        "acervos": obter_opcoes_selecao("Acervo")
+        "acervos": obter_opcoes_selecao("Acervo"),
+        "categorias": obter_opcoes_selecao("Categoria")
     }
     return render_template('forms_livro.html', **context, **ano_atual)
