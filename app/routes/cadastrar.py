@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect
 from ..services.autor_service import adicionar_autor
 from ..services.editora_service import adicionar_editora
+from ..services.categoria_service import adicionar_categoria
 
 cadastrar_bp = Blueprint('cadastrar', __name__, template_folder='templates', static_folder='static', static_url_path='/app/static')
 
@@ -39,3 +40,19 @@ def cadastrar_editora():
         return redirect("/cadastrar/editora")
     
     return render_template('forms_editora.html')
+
+@cadastrar_bp.route("/cadastrar/categoria", methods=['GET', 'POST'])
+def cadastrar_categoria():
+    if request.method == 'POST':
+        nome = request.form.get('nome_categoria')
+        
+        sucesso, resultado = adicionar_categoria(nome)
+        
+        if sucesso:
+            flash(f"Categoria cadastrada com sucesso!", "success")
+        else:
+            flash(resultado, "danger")
+            
+        return redirect("/cadastrar/categoria")
+    
+    return render_template('forms_categoria.html')

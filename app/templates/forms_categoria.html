@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadastro de categoria</title>
+    <link rel="stylesheet" href="../static/style/style.css" />
+  </head>
+  <body>
+    <div class="container">
+        <h1>Cadastrar categoria</h1>
+        <form action="/cadastrar/categoria" method="POST">
+            <label for="nome_categoria">Nome:</label>
+            <input type="text" name="nome_categoria" id="nome_categoria" required>
+            <button type="submit" value="Cadastrar">Cadastrar Categoria</button>
+        </form>
+        <br>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+    </div>
+  </body>
+</html>
