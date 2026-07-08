@@ -1,0 +1,56 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <div class="d-flex w-100 justify-content-between">
+            <a class="navbar-brand" href="/">Bem-vindo!</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasMenu">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title">Menu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                        <hr>
+                        <li class="nav-item">
+                            <a class="nav-link fw-bold" href="/">
+                                <i class="bi bi-house-door"></i> Biblioteca
+                            </a>
+                        </li>
+                        <hr>
+                        <li class="nav-item"><strong>Acervos</strong></li>
+                        {% for acervo in acervos_lista %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('main.listar_acervo', nomeAcervo=acervo) }}">
+                                    {{ acervo }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        {% if show_meta is not defined %}
+            {% set show_meta = True %} {% endif %}
+        {% if show_meta %}
+        <div class="w-100 mt-2 px-2">
+            {% if total >= 1000 %}
+                <div class="alert alert-success py-1 px-2 m-0" role="alert">
+                    <i class="bi"></i> Agora nós temos uma biblioteca: {{ total }} livros!
+                </div>
+            {% else %}
+                <small class="bi">Meta: {{ total }}/1000</small>
+                <div class="progress" style="height: 6px;">
+                    <div class="progress-bar" style="width: {{ progresso }}%; background-color: #257beb;"></div>
+                </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+</nav>

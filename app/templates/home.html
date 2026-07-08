@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+    <header class="mb-4">
+        <h1>{{ header_text }}</h1>
+        {% if show_meta %}
+        <div class="mt-3">
+            <p class="mb-1">Meta de livros: {{ total }} / 1000</p>
+            <div class="progress" style="height: 10px;">
+                <div class="progress-bar" style="width: {{ progresso }}%; background-color: var(--accent);" role="progressbar"></div>
+            </div>
+        </div>
+        {% endif %}
+    </header>
+
+    <section>
+        {% for livro in livros %}
+            {% include 'components/book_card.html' %}
+        {% endfor %}
+    </section>
+</div>
+{% endblock %}

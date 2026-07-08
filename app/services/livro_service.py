@@ -49,3 +49,34 @@ def adicionar_livro(dados):
     sheet.append_row(novo_registro)
       
     return True, novo_id
+
+def obter_todos_os_livros():
+    aba_livro = verificar_planilha_de_trabalho("Livro")
+    aba_LivroCategoria = verificar_planilha_de_trabalho("LivroCategoria")
+    
+    livros = aba_livro.get_all_records()
+    vinculos = aba_LivroCategoria.get_all_records()
+    
+    if not livros:
+        return []
+    
+    mapa_categorias = {}
+    for v in vinculos:
+        id_l = v.get('id_livro')
+        id_c = v.get('id_categoria')
+        if id_l:
+            if id_l not in mapa_categorias:
+                mapa_categorias[id_l] = []
+            mapa_categorias[id_l].append(id_c)
+            
+    for livro in livros:
+        id_livro = livro.get('id_livro')
+        isbn = livro.get('ISBN', '')
+        livro['categorias'] = mapa_categorias.get(id_livro, [])
+        
+        if isbn:
+            livro['url_capa'] = f"https://covers.openlibrary.org/b/isbn/{isbn}-M.jpg"
+        else:
+            livro['url_capa'] = "/static/img/sem_capa.jpg"
+                
+    return livros

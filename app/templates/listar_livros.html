@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Biblioteca Santana de Morais</title>
+    <link rel="stylesheet" href="../static/style/style.css" />
+  </head>
+  <body>
+    <div class="card bg-light mb-4">
+        <div class="card-body">
+            <h5>Progresso para Biblioteca ({{ total }}/1000)</h5>
+            <div class="progress">
+                <div class="progress-bar" style="width: {{ progresso }}%"></div>
+            </div>
+            <p>Faltam {{ falta }} livros para sua meta!</p>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Capa</th>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for livro in livros %}
+                <tr>
+                    <td><img src="{{ livro.url_capa }}" width="50" alt="Capa"></td>
+                    <td>{{ livro.titulo }}</td>
+                    <td>{{ livro.autor }}</td>
+                    <td>{{ livro.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+  </body>
+</html>
