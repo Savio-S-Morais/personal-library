@@ -17,7 +17,7 @@ class TestAutorService(unittest.TestCase):
         self.assertEqual(mensagem, "Autor(a) já cadastrado(a)")
         mock_sheet.append_row.assert_not_called()
 
-    @patch('app.services.autor_service.verificar_planilha_de_trabalho')
+        @patch('app.services.autor_service.verificar_planilha_de_trabalho')
     def test_gerar_id_incrementado(self, mock_verificar_planilha_de_trabalho):
         mock_sheet = MagicMock()
         # Simula 2 registros, deve gerar ID 3

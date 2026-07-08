@@ -7,17 +7,13 @@ class TestAutorCadastrar(unittest.TestCase):
     def setUp(self):
         load_dotenv(".env.test", override=True)
         
-        print(os.environ.get("GOOGLE_SHEETS_CREDENTIALS_PATH"))
-        print(os.environ.get("SPREADSHEET_ID"))
-        print(os.environ.get("SECRET_KEY"))
-        
         self.env = patch.dict(
             os.environ,
             {
                 "GOOGLE_SHEETS_CREDENTIALS_PATH": os.environ.get('GOOGLE_SHEETS_CREDENTIALS_PATH'),
                 "SPREADSHEET_ID": os.environ.get('SPREADSHEET_ID'),
-                "SECRET_KEY": os.environ.get('SECRET_KEY'),
-            },
+                "SECRET_KEY": os.environ.get('SECRET_KEY')
+            }
         )
         self.env.start()
         
@@ -31,15 +27,16 @@ class TestAutorCadastrar(unittest.TestCase):
         self.env.stop()
 
     @patch('app.routes.cadastrar.cadastrar_autor') 
-    def test_cadastrar_autor_status_deve_retornar_200(self, mock_cadastrar_autor):
+    def test_cadastrar_autor(self, mock_cadastrar_autor):
         # Setup: Simula que o serviço funcionou
         mock_cadastrar_autor.return_value = (True, 1)
         
         response = self.client.post(
             "/cadastrar/autor",
-            data={"nome_autor": "Eichiro Oda"},
+            data={"nome_autor": "Eichiro Oda"}
         )
 
+        # HTTP 302 significa redirecionamento temporario de página
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.headers["Location"], "/cadastrar/autor")
         
