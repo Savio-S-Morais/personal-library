@@ -44,7 +44,7 @@
                     <i class="bi"></i> Agora nós temos uma biblioteca: {{ total }} livros!
                 </div>
             {% else %}
-                <small class="bi">Meta: {{ total }}/1000</small>
+                <small class="bi">Hoje temos {{ total }} livros, faltam {{ 1000 - total}} livros para ser considerado uma biblioteca</small>
                 <div class="progress" style="height: 6px;">
                     <div class="progress-bar" style="width: {{ progresso }}%; background-color: #257beb;"></div>
                 </div>
