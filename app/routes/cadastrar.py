@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect
 from ..services.autor_service import adicionar_autor
+from ..services.editora_service import adicionar_editora
 
 cadastrar_bp = Blueprint('cadastrar', __name__, template_folder='templates', static_folder='static', static_url_path='/app/static')
 
@@ -22,3 +23,19 @@ def cadastrar_autor():
         return redirect("/cadastrar/autor")
     
     return render_template('forms_autor.html')
+
+@cadastrar_bp.route("/cadastrar/editora", methods=['GET', 'POST'])
+def cadastrar_editora():
+    if request.method == 'POST':
+        nome = request.form.get('nome_editora')
+        
+        sucesso, resultado = adicionar_editora(nome)
+        
+        if sucesso:
+            flash(f"Editora cadastrada com sucesso!", "success")
+        else:
+            flash(resultado, "danger")
+            
+        return redirect("/cadastrar/editora")
+    
+    return render_template('forms_editora.html')
