@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template
 from markupsafe import escape
+from urllib.parse import unquote
 from ..services.api_planilhas import verificar_planilha_de_trabalho
 from ..services.livro_service import obter_todos_os_livros
 
@@ -21,6 +22,7 @@ def home():
 
 @main_bp.route("/acervo/<string:nomeAcervo>")
 def listar_acervo(nomeAcervo):
+    nomeAcervo = unquote(nomeAcervo)    
     todos = obter_todos_os_livros()
     livros_filtrados = [l for l in todos if l['acervo'] == nomeAcervo]
     
