@@ -1,29 +1,86 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container py-5">
+<div class="container py-4 py-lg-5">
     <div class="row justify-content-center">
-        <div class="col-md-4">
-            <form method="POST" class="card p-4 shadow-sm">
-                <h3 class="text-center mb-4">Login</h3>
-                
-                {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-danger">{{ message }}</div>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
-
-                <div class="mb-3">
-                    <label class="form-label">Usuário</label>
-                    <input type="text" name="user" class="form-control" required>
+        <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+            <div class="app-card">
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <div class="login-icon mb-3">
+                            <i class="bi bi-person-lock"></i>
+                        </div>
+                        <h3 class="fw-bold">
+                            Entrar
+                        </h3>
+                        <p class="app-text-muted mb-0">
+                            Acesse sua biblioteca
+                        </p>
+                    </div>
+                    {% with messages = get_flashed_messages(category_filter=["danger"]) %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-danger alert-dismissible fade show"
+                                     role="alert">
+                                    {{ message }}
+                                    <button type="button"
+                                            class="btn-close"
+                                            data-bs-dismiss="alert">
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    <form method="POST"
+                          class="needs-validation"
+                          novalidate>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Usuário
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-person"></i>
+                                </span>
+                                <input
+                                    type="text"
+                                    name="user"
+                                    class="form-control"
+                                    placeholder="Digite seu usuário"
+                                    required>
+                                <div class="invalid-feedback">
+                                    Informe o usuário.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">
+                                Senha
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-lock"></i>
+                                </span>
+                                <input
+                                    type="password"
+                                    name="password"
+                                    class="form-control"
+                                    placeholder="Digite sua senha"
+                                    required>
+                                <div class="invalid-feedback">
+                                    Informe a senha.
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit"
+                                class="btn btn-app-primary w-100">
+                            <i class="bi bi-box-arrow-in-right"></i>
+                            Entrar
+                        </button>
+                    </form>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Senha</label>
-                    <input type="password" name="password" class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn-primary w-100">Entrar</button>
-            </form>
+            </div>
         </div>
     </div>
 </div>

@@ -30,9 +30,11 @@ def formulario(tipo):
         else:
             flash(f"Erro ao cadastrar {tipo}", "danger")
             
-        #return redirect(url_for('cadastrar.home'))
+        return redirect(url_for('cadastrar.formulario', tipo=tipo))
     
-    return render_template(f"cadastrar/forms_{tipo}.html", tipo=tipo, **obter_dados_auxiliares(tipo))
+    ano_atual = { "ano_atual": datetime.now().year } 
+    
+    return render_template(f"cadastrar/forms_{tipo}.html", tipo=tipo, **obter_dados_auxiliares(tipo), **ano_atual)
 
 def obter_dados_auxiliares(tipo):
     # Retorna os dados para preencher os <select> do formulário

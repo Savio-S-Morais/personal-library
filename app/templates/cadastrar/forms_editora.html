@@ -1,14 +1,124 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container mt-4">
-    <h3>Cadastrar {{ tipo|capitalize }}</h3>
-    <form method="POST">
-        {% if tipo == 'editora' %}
-            <div class="mb-3"><input name="nome_editora" class="form-control" placeholder="Nome Editora" required></div>
-        {% endif %}
-        
-        <button type="submit" class="btn btn-success">Salvar</button>
-        <a href="{{ url_for('cadastrar.home') }}" class="btn btn-secondary">Voltar</a>
-    </form>
+<div class="container py-3 py-lg-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <div class="app-card">
+                <div class="card-body p-3 p-md-4">
+                    <h3 class="mb-4">
+                        <i class="bi bi-building cadastro-icon"></i>
+                        Cadastrar {{ tipo|capitalize }}
+                    </h3>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} alert-dismissible fade show flash-message"
+                                     role="alert">
+                                    {{ message }}
+                                    <button type="button"
+                                            class="btn-close"
+                                            data-bs-dismiss="alert">
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    <form method="POST" class="needs-validation" novalidate>
+                        <p class="app-text-muted small">
+                            <span class="text-danger">*</span>
+                            Campos obrigatórios.
+                        </p>
+                        {% if tipo == 'editora' %}
+                            <label class="form-label">
+                                Nome da Editora
+                                <span class="text-danger">*</span>
+                                <i class="bi bi-info-circle text-primary"
+                                   data-bs-toggle="tooltip"
+                                   title="Informe o nome completo da editora.">
+                                </i>
+                            </label>
+                            <input
+                                type="text"
+                                name="nome_editora"
+                                class="form-control"
+                                placeholder="Ex.: Companhia das Letras"
+                                required>
+                            <div class="invalid-feedback">
+                                Informe o nome da editora.
+                            </div>
+                        {% elif tipo == 'autor' %}
+                            <label class="form-label">
+                                Nome do Autor
+                                <span class="text-danger">*</span>
+                                <i class="bi bi-info-circle text-primary"
+                                   data-bs-toggle="tooltip"
+                                   title="Informe o nome completo do autor.">
+                                </i>
+                            </label>
+                            <input
+                                type="text"
+                                name="nome_autor"
+                                class="form-control"
+                                placeholder="Ex.: Machado de Assis"
+                                required>
+                            <div class="invalid-feedback">
+                                Informe o nome do autor.
+                            </div>
+                        {% elif tipo == 'acervo' %}
+                            <label class="form-label">
+                                Nome do Acervo
+                                <span class="text-danger">*</span>
+                                <i class="bi bi-info-circle text-primary"
+                                   data-bs-toggle="tooltip"
+                                   title="Informe o nome ou identificação do acervo.">
+                                </i>
+                            </label>
+                            <input
+                                type="text"
+                                name="nome_acervo"
+                                class="form-control"
+                                placeholder="Ex.: Biblioteca Central"
+                                required>
+                            <div class="invalid-feedback">
+                                Informe o nome do acervo.
+                            </div>
+                        {% endif %}
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="{{ url_for('cadastrar.home') }}"
+                               class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i>
+                                Voltar
+                            </a>
+                            <button type="submit"
+                                    class="btn btn-success">
+                                <i class="bi bi-check-circle"></i>
+                                Salvar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<script>
+(() => {
+    'use strict';
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+    const tooltipTriggerList =
+        document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    [...tooltipTriggerList].map(
+        tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl)
+    );
+})();
+</script>
 {% endblock %}

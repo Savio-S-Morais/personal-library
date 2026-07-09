@@ -1,26 +1,43 @@
-<div class="book-card p-3 mb-3 shadow-sm rounded">
-    <div class="row align-items-center">
-        <div class="col-md-2 col-4">
-            <img src="{{ livro.url_capa }}" class="img-fluid rounded" alt="Capa">
+<div class="book-card">
+    <div class="row g-0 align-items-center">
+        <!-- Capa -->
+        <div class="col-4 col-sm-3">
+            <img src="{{ livro.url_capa }}"
+                 class="book-cover"
+                 alt="Capa do livro {{ livro.titulo }}">
         </div>
-        <div class="col-md-10 col-8">
-            <h5 class="fw-bold">{{ livro.titulo }}</h5>
-            <p class="text-muted">{{ livro.autor }} • {{ livro.anoPublicacao }}</p>
-            <div class="mb-2">
-                {% for cat in livro.categorias %}
-                    <span class="badge bg-light text-dark border">{{ cat }}</span>
-                {% endfor %}
+        <!-- Informações -->
+        <div class="col-8 col-sm-9">
+            <div class="book-info">
+                <h5 class="book-title">
+                    {{ livro.titulo }}
+                </h5>
+                <p class="book-meta">
+                    <i class="bi bi-person"></i>
+                    {{ livro.autor }}
+                    <span class="mx-1">•</span>
+                    <i class="bi bi-calendar"></i>
+                    {{ livro.anoPublicacao }}
+                </p>
+                <!-- Categorias -->
+                <div class="book-tags mb-2">
+                    {% for cat in livro.categorias %}
+                        <span class="book-category">
+                            {{ cat }}
+                        </span>
+                    {% endfor %}
+                </div>
+                <!-- Status -->
+                {% set status_classes = {
+                    'Disponível': 'status-success',
+                    'Emprestado': 'status-warning',
+                    'Em leitura': 'status-info',
+                    'Desaparecido': 'status-danger'
+                } %}
+                <span class="book-status {{ status_classes.get(livro.status, 'status-default') }}">
+                    {{ livro.status }}
+                </span>
             </div>
-            {% set status_colors = {
-                'Disponível': 'bg-success',
-                'Emprestado': 'bg-warning text-dark',
-                'Em leitura': 'bg-info text-dark',
-                'Desaparecido': 'bg-danger'
-            } %}
-
-            <span class="badge {{ status_colors.get(livro.status, 'bg-secondary') }}">
-                {{ livro.status }}
-            </span>
         </div>
     </div>
 </div>

@@ -1,41 +1,60 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Biblioteca Santana de Morais</title>
-    <link rel="stylesheet" href="../static/style/style.css" />
-  </head>
-  <body>
-    <div class="card bg-light mb-4">
-        <div class="card-body">
-            <h5>Progresso para Biblioteca ({{ total }}/1000)</h5>
-            <div class="progress">
-                <div class="progress-bar" style="width: {{ progresso }}%"></div>
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4 py-lg-5">
+    <!-- Progresso da biblioteca -->
+    <div class="app-card mb-4">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="mb-0">
+                    <i class="bi bi-bar-chart cadastro-icon"></i>
+                    Progresso da Biblioteca
+                </h5>
+                <span class="library-counter">
+                    {{ total }}/1000
+                </span>
             </div>
-            <p>Faltam {{ falta }} livros para sua meta!</p>
+            <div class="progress mb-3">
+                <div class="progress-bar"
+                     role="progressbar"
+                     style="width: {{ progresso }}%">
+                </div>
+            </div>
+            <p class="app-text-muted mb-0">
+                Faltam <strong>{{ falta }}</strong> livros para atingir sua meta.
+            </p>
         </div>
-
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Capa</th>
-                    <th>Título</th>
-                    <th>Autor</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for livro in livros %}
-                <tr>
-                    <td><img src="{{ livro.url_capa }}" width="50" alt="Capa"></td>
-                    <td>{{ livro.titulo }}</td>
-                    <td>{{ livro.autor }}</td>
-                    <td>{{ livro.status }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
     </div>
-  </body>
-</html>
+    <!-- Lista de livros -->
+    <div class="row g-4">
+        {% for livro in livros %}
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="book-card h-100">
+                <div class="row g-0">
+                    <!-- Capa -->
+                    <div class="col-4">
+                        <img src="{{ livro.url_capa }}"
+                             class="book-cover"
+                             alt="Capa do livro {{ livro.titulo }}">
+                    </div>
+                    <!-- Informações -->
+                    <div class="col-8">
+                        <div class="book-info">
+                            <h5 class="book-title">
+                                {{ livro.titulo }}
+                            </h5>
+                            <p class="book-author">
+                                <i class="bi bi-person"></i>
+                                {{ livro.autor }}
+                            </p>
+                            <span class="tag-status">
+                                {{ livro.status }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

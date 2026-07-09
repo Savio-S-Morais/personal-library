@@ -1,61 +1,263 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container py-4">
-    <div class="card p-4 shadow-sm">
-        <h3 class="mb-4">Cadastrar Livro</h3>
-        <form method="POST">
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <input type="text" name="titulo" class="form-control" placeholder="Título do livro" required>
-                </div>
-                <div class="col-md-3">
-                    <input type="number" name="anoPublicacao" class="form-control" placeholder="Ano" min="0" max="{{ ano_atual }}" required>
-                </div>
-                <div class="col-md-3">
-                    <input type="text" name="ISBN" class="form-control" placeholder="ISBN">
+<div class="container py-3 py-lg-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-10">
+            <div class="app-card">
+                <div class="card-body p-3 p-md-4 p-lg-5">
+                    <h3 class="mb-4">
+                        <i class="bi bi-book cadastro-icon"></i>
+                        Cadastrar Livro
+                    </h3>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} alert-dismissible fade show flash-message">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    <form method="POST" class="needs-validation" novalidate>
+
+                        <p class="app-text-muted small mb-4">
+                            <span class="text-danger">*</span> Campos obrigatórios.
+                        </p>
+
+                        <!-- Informações do Livro -->
+                        <h5 class="border-bottom pb-2 mb-3">
+                            <i class="bi bi-book"></i>
+                            Informações do Livro
+                        </h5>
+
+                        <div class="row g-3">
+
+                            <div class="col-12">
+                                <label class="form-label">
+                                    Título <span class="text-danger">*</span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="titulo"
+                                    class="form-control"
+                                    placeholder="Ex.: Dom Casmurro"
+                                    required>
+
+                                <div class="invalid-feedback">
+                                    Informe o título do livro.
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-sm-6">
+                                <label class="form-label">
+                                    Ano de Publicação <span class="text-danger">*</span>
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="anoPublicacao"
+                                    class="form-control"
+                                    min="0"
+                                    max="{{ ano_atual }}"
+                                    placeholder="Ex.: {{ ano_atual }}"
+                                    required>
+
+                                <div class="invalid-feedback">
+                                    Informe um ano válido.
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-sm-6">
+                                <label class="form-label">
+                                    ISBN
+                                    <i class="bi bi-info-circle text-primary"
+                                        data-bs-toggle="tooltip"
+                                        title="Código ISBN do livro. Pode ser localizado na ficha catalográfica do livro.">
+                                    </i>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="ISBN"
+                                    class="form-control"
+                                    pattern="[0-9]{10,13}"
+                                    maxlength="13">
+
+                                <div class="form-text">
+                                    Informe somente números.
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Classificação -->
+                        <h5 class="border-bottom pb-2 mt-5 mb-3">
+                            <i class="bi bi-tags"></i>
+                            Classificação
+                        </h5>
+
+                        <div class="row g-3">
+
+                            <div class="col-12 col-lg-4">
+                                <label class="form-label">
+                                    Autor <span class="text-danger">*</span>
+                                </label>
+
+                                <select name="autor" class="form-select" required>
+                                    {% for autor in autores %}
+                                        <option>{{ autor }}</option>
+                                    {% endfor %}
+                                </select>
+
+                                <div class="invalid-feedback">
+                                    Selecione um autor.
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-4">
+                                <label class="form-label">
+                                    Editora <span class="text-danger">*</span>
+                                </label>
+
+                                <select name="editora" class="form-select" required>
+                                    {% for editora in editoras %}
+                                        <option>{{ editora }}</option>
+                                    {% endfor %}
+                                </select>
+
+                                <div class="invalid-feedback">
+                                    Selecione uma editora.
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-4">
+                                <label class="form-label">
+                                    Categorias
+                                    <span class="text-danger">*</span>
+
+                                    <i class="bi bi-info-circle text-primary"
+                                        data-bs-toggle="tooltip"
+                                        title="É possível selecionar mais de uma categoria.">
+                                    </i>
+                                </label>
+
+                                <select
+                                    name="categoria[]"
+                                    multiple
+                                    class="form-select"
+                                    style="height:120px"
+                                    required>
+
+                                    {% for categoria in categorias %}
+                                        <option value="{{ categoria }}">
+                                            {{ categoria }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                <div class="form-text">
+                                    No computador utilize <strong>Ctrl</strong> (Windows) ou <strong>⌘ Command</strong> (Mac) para selecionar várias categorias.
+                                </div>
+
+                                <div class="invalid-feedback">
+                                    Selecione pelo menos uma categoria.
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Localização -->
+                        <h5 class="border-bottom pb-2 mt-5 mb-3">
+                            <i class="bi bi-archive"></i>
+                            Localização
+                        </h5>
+
+                        <div class="row g-3">
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">
+                                    Acervo
+                                    <span class="text-danger">*</span>
+
+                                    <i class="bi bi-info-circle text-primary"
+                                        data-bs-toggle="tooltip"
+                                        title="Acervo físico ao qual este livro pertence.">
+                                    </i>
+                                </label>
+
+                                <select name="acervo" class="form-select" required>
+                                    {% for acervo in acervos %}
+                                        <option>{{ acervo }}</option>
+                                    {% endfor %}
+                                </select>
+
+                                <div class="invalid-feedback">
+                                    Selecione um acervo.
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">
+                                    Status
+                                    <i class="bi bi-info-circle text-primary"
+                                        data-bs-toggle="tooltip"
+                                        title="Situação atual do exemplar.">
+                                    </i>
+                                </label>
+
+                                <select name="status" class="form-select">
+
+                                    <option selected>Disponível</option>
+                                    <option>Em leitura</option>
+                                    <option>Emprestado</option>
+                                    <option>Desaparecido</option>
+
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-5">
+
+                            <a href="{{ url_for('cadastrar.home') }}"
+                               class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i>
+                                Voltar
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i>
+                                Cadastrar Livro
+                            </button>
+
+                        </div>
+
+                    </form>
                 </div>
             </div>
-
-            <div class="row g-3 mt-2">
-                <div class="col-md-3">
-                    <label class="form-label">Status</label>
-                    <select name="status" class="form-select">
-                        <option>Disponível</option>
-                        <option>Em leitura</option>
-                        <option>Emprestado</option>
-                        <option>Desaparecido</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Autor</label>
-                    <select name="autor" class="form-select" required>
-                        {% for autor in autores %}<option>{{ autor }}</option>{% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Editora</label>
-                    <select name="editora" class="form-select" required>
-                        {% for editora in editoras %}<option>{{ editora }}</option>{% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Acervo</label>
-                    <select name="acervo" class="form-select" required>
-                        {% for acervo in acervos %}<option>{{ acervo }}</option>{% endfor %}
-                    </select>
-                </div>
-            </div>
-
-            <div class="mt-3">
-                <label class="form-label">Categorias (Segure CTRL para selecionar várias)</label>
-                <select name="categoria[]" multiple class="form-select" required style="height: 120px;">
-                    {% for categoria in categorias %}<option>{{ categoria }}</option>{% endfor %}
-                </select>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100 mt-4">Cadastrar Livro</button>
-            <a href="{{ url_for('cadastrar.home') }}" class="btn btn-secondary w-100 mt-4">Voltar</a>
-        </form>
+        </div>
     </div>
 </div>
+<script>
+(() => {
+    'use strict';
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+    const tooltipTriggerList =
+        document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    [...tooltipTriggerList].map(
+        tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl)
+    );
+})();
+</script>
 {% endblock %}

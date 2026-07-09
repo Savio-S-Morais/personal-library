@@ -1,14 +1,38 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container py-5 text-center">
-    <h2 class="mb-5">O que deseja cadastrar?</h2>
-    <div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
-        {% for tipo in ['Livro', 'Autor', 'Editora', 'Categoria'] %}
+<div class="container py-4 py-lg-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">
+            <i class="bi bi-plus-circle cadastro-icon"></i>
+            O que deseja cadastrar?
+        </h2>
+        <p class="text-muted">
+            Escolha uma opção abaixo para adicionar um novo registro ao sistema.
+        </p>
+    </div>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-4 g-4 justify-content-center">
+        {% set cadastros = [
+            ('Livro', 'bi-book', 'Adicionar um novo livro ao acervo'),
+            ('Autor', 'bi-person', 'Cadastrar um novo autor'),
+            ('Editora', 'bi-building', 'Cadastrar uma nova editora'),
+            ('Categoria', 'bi-tags', 'Criar uma nova categoria')
+        ] %}
+        {% for tipo, icone, descricao in cadastros %}
         <div class="col">
-            <a href="{{ url_for('cadastrar.formulario', tipo=tipo|lower) }}" class="text-decoration-none">
-                <div class="card p-4 h-100 shadow-sm hover-shadow">
-                    <h4>{{ tipo }}</h4>
-                    <p class="text-muted">Adicionar novo registro de {{ tipo }}</p>
+            <a href="{{ url_for('cadastrar.formulario', tipo=tipo|lower) }}"
+               class="text-decoration-none">
+                <div class="cadastro-card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="cadastro-icon-box mb-3">
+                            <i class="bi {{ icone }}"></i>
+                        </div>
+                        <h4 class="cadastro-title">
+                            {{ tipo }}
+                        </h4>
+                        <p class="cadastro-description">
+                            {{ descricao }}
+                        </p>
+                    </div>
                 </div>
             </a>
         </div>
