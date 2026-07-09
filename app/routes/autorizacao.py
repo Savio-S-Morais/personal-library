@@ -20,7 +20,6 @@ def login():
         if user_data and user_data['password'] == hash(password):
             user = Usuario(id=user_data['username'], nome=user_data['username'])
             login_user(user)
-            print(f"DEBUG: Login realizado! Usuário atual: {current_user.id}")
             return redirect(url_for('main.home'))
         
         flash("Usuário ou senha incorretos")
