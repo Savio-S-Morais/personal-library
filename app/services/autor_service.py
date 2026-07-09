@@ -2,8 +2,8 @@ from app.services.api_planilhas import verificar_planilha_de_trabalho
 
 def adicionar_autor(nome_autor):
     # Tratamento inicial
-    nome_tratado = nome_autor.strip()
-    if not nome_tratado:
+    nome_tratado = nome_autor.get('nome_autor')
+    if not nome_tratado or not isinstance(nome_tratado, str):
         return False, "O nome do autor não pode estar vazio."
     
     sheet = verificar_planilha_de_trabalho("Autor")
@@ -11,7 +11,7 @@ def adicionar_autor(nome_autor):
     
     # Validação de duplicidade
     for row in registros:
-        if row['nomeAutor'].lower() == nome_autor.lower():
+        if str(row.get('nomeAutor', '')).lower() == nome_tratado.lower():
             return False, "Autor(a) já cadastrado(a)"
         
     # Geração de ID

@@ -31,17 +31,6 @@ def listar_acervo(nomeAcervo):
                            show_meta=False)
 
 
-@main_bp.route('/salvar', methods=['GET', 'POST'])
-def save_data():
-    sheet = verificar_planilha_de_trabalho("Livro")
-    # Exemplo de escrita
-    sheet.append_row(["Dado 1", "Dado 2"])
-    
-    # Exemplo de leitura
-    data = sheet.get_all_records()
-    
-    return {"status": "success", "data": data}
-
 @main_bp.route("/<string:url>")
 def error(url):
     url = escape(url)

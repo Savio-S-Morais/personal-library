@@ -1,93 +1,46 @@
 from datetime import datetime
-from flask import Blueprint, render_template, request, flash, redirect
-from ..services.autor_service import adicionar_autor
-from ..services.editora_service import adicionar_editora
-from ..services.categoria_service import adicionar_categoria
-from ..services.livro_service import adicionar_livro, obter_opcoes_selecao
-from ..services.livro_categoria_service import vincular_livro_categoria
+from flask import Blueprint, render_template, request, flash, redirect, session, url_for
+from flask_login import login_required
+from app.services.livro_service import obter_opcoes_selecao, adicionar_livro
+from app.services.cadastro_service import salvar_registro
 
-cadastrar_bp = Blueprint('cadastrar', __name__, template_folder='templates', static_folder='static', static_url_path='/app/static')
+cadastrar_bp = Blueprint('cadastrar', __name__, template_folder='templates', static_folder='static', static_url_path='/app/static', url_prefix="/cadastrar")
 
-@cadastrar_bp.route("/cadastrar")
+@cadastrar_bp.before_request
+@login_required
+def require_login():
+    pass
+
+@cadastrar_bp.route("/")
 def home():
-    return "Home de teste apenas"
+    return render_template('cadastrar/cadastrar.html')
 
-@cadastrar_bp.route("/cadastrar/autor", methods=['GET', 'POST'])
-def cadastrar_autor():
+@login_required
+@cadastrar_bp.route('/<tipo>', methods=['GET', 'POST'])
+def formulario(tipo):
     if request.method == 'POST':
-        nome = request.form.get('nome_autor')
+        dados = request.form.to_dict()
         
-        sucesso, resultado = adicionar_autor(nome)
-        
-        if sucesso:
-            flash(f"Autor(a) cadastrado com sucesso!", "success")
-        else:
-            flash(resultado, "danger")
+        # Tratamento especial para categorias múltiplas
+        if tipo == 'livro':
+            dados['categorias'] = request.form.getlist('categoria[]')
             
-        return redirect("/cadastrar/autor")
+        if salvar_registro(tipo, dados):
+            flash(f"{tipo.capitalize()} cadastrado com sucesso!", "success")
+        else:
+            flash(f"Erro ao cadastrar {tipo}", "danger")
+            
+        #return redirect(url_for('cadastrar.home'))
     
-    return render_template('forms_autor.html')
+    return render_template(f"cadastrar/forms_{tipo}.html", tipo=tipo, **obter_dados_auxiliares(tipo))
 
-@cadastrar_bp.route("/cadastrar/editora", methods=['GET', 'POST'])
-def cadastrar_editora():
-    if request.method == 'POST':
-        nome = request.form.get('nome_editora')
-        
-        sucesso, resultado = adicionar_editora(nome)
-        
-        if sucesso:
-            flash(f"Editora cadastrada com sucesso!", "success")
-        else:
-            flash(resultado, "danger")
-            
-        return redirect("/cadastrar/editora")
-    
-    return render_template('forms_editora.html')
-
-@cadastrar_bp.route("/cadastrar/categoria", methods=['GET', 'POST'])
-def cadastrar_categoria():
-    if request.method == 'POST':
-        nome = request.form.get('nome_categoria')
-        
-        sucesso, resultado = adicionar_categoria(nome)
-        
-        if sucesso:
-            flash(f"Categoria cadastrada com sucesso!", "success")
-        else:
-            flash(resultado, "danger")
-            
-        return redirect("/cadastrar/categoria")
-    
-    return render_template('forms_categoria.html')
-
-@cadastrar_bp.route("/cadastrar/livro", methods=['GET', 'POST'])
-def cadastrar_livro():
-    if request.method == 'POST':
-        sucesso, resultado = adicionar_livro(request.form)        
-        if sucesso:
-            id_livro = resultado
-            ids_categorias = request.form.getlist('categoria[]')
-            
-            erros = []
-            for id_categoria in ids_categorias:
-                if not vincular_livro_categoria(id_livro, id_categoria):
-                    erros.append(id_categoria)
-            
-            if not erros:
-                flash("Livro cadastrado com sucesso!", "success")
-            else:
-                flash(f"Erro ao vincular categorias: {', '.join(erros)}", "warning")
-        else:
-            flash(resultado, "danger")
-            
-        return redirect("/cadastrar/livro")
-    
-    # Carregar opções para o formulário
-    ano_atual =  {"ano_atual": datetime.now().year}  
-    context = {
-        "autores": obter_opcoes_selecao("Autor"),
-        "editoras": obter_opcoes_selecao("Editora"),
-        "acervos": obter_opcoes_selecao("Acervo"),
-        "categorias": obter_opcoes_selecao("Categoria")
-    }
-    return render_template('forms_livro.html', **context, **ano_atual)
+def obter_dados_auxiliares(tipo):
+    # Retorna os dados para preencher os <select> do formulário
+    if tipo == 'livro':
+        return {
+            'autores': obter_opcoes_selecao("Autor"),
+            'editoras': obter_opcoes_selecao("Editora"),
+            'acervos': obter_opcoes_selecao("Acervo"),
+            'categorias': obter_opcoes_selecao("Categoria")
+        }
+    return {}

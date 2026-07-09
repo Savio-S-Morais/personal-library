@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+    <div class="card p-4 shadow-sm">
+        <h3 class="mb-4">Cadastrar Livro</h3>
+        <form method="POST">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <input type="text" name="titulo" class="form-control" placeholder="Título do livro" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="number" name="anoPublicacao" class="form-control" placeholder="Ano" min="0" max="{{ ano_atual }}" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="ISBN" class="form-control" placeholder="ISBN">
+                </div>
+            </div>
+
+            <div class="row g-3 mt-2">
+                <div class="col-md-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option>Disponível</option>
+                        <option>Em leitura</option>
+                        <option>Emprestado</option>
+                        <option>Desaparecido</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Autor</label>
+                    <select name="autor" class="form-select" required>
+                        {% for autor in autores %}<option>{{ autor }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Editora</label>
+                    <select name="editora" class="form-select" required>
+                        {% for editora in editoras %}<option>{{ editora }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Acervo</label>
+                    <select name="acervo" class="form-select" required>
+                        {% for acervo in acervos %}<option>{{ acervo }}</option>{% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <label class="form-label">Categorias (Segure CTRL para selecionar várias)</label>
+                <select name="categoria[]" multiple class="form-select" required style="height: 120px;">
+                    {% for categoria in categorias %}<option>{{ categoria }}</option>{% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 mt-4">Cadastrar Livro</button>
+            <a href="{{ url_for('cadastrar.home') }}" class="btn btn-secondary w-100 mt-4">Voltar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -26,3 +26,8 @@
     border-radius: 20px;
     font-size: 0.75rem;
 }
+
+.hover-shadow:hover { 
+    transform: translateY(-5px); 
+    transition: 0.3s; 
+}

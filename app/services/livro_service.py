@@ -1,6 +1,7 @@
 from datetime import datetime
 from functools import lru_cache # Adiciona cache para evitar chamadas repetitivas à API
 from app.services.api_planilhas import verificar_planilha_de_trabalho
+from app.services.livro_categoria_service import vincular_livro_categoria
 
 @lru_cache(maxsize=128)
 def obter_opcoes_selecao(aba_nome):
@@ -34,9 +35,9 @@ def adicionar_livro(dados):
         if ano > ano_atual:
             return False, f"O ano não pode ser maior que {ano_atual}"
     except (ValueError, TypeError):
-        return False, "O ano deve ser um número válido"
+        return False, "O ano deve ser um número válido"  
     
-    
+     
     if not registros:
         novo_id = 1
     else:
@@ -47,6 +48,15 @@ def adicionar_livro(dados):
         novo_id, dados['titulo'], ano, dados['ISBN'], dados['status'], dados['autor'], dados['editora'], dados['acervo']
     ]
     sheet.append_row(novo_registro)
+    
+    # Vincular categorias
+    erros = []
+    for id_categoria in dados.get("categorias", []):
+        if not vincular_livro_categoria(novo_id, id_categoria):
+            erros.append(id_categoria)
+
+    if erros:
+        return False, f"Erro ao vincular categorias: {', '.join(map(str, erros))}"
       
     return True, novo_id
 
