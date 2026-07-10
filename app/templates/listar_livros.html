@@ -34,7 +34,8 @@
                     <div class="col-4">
                         <img src="{{ livro.url_capa }}"
                              class="book-cover"
-                             alt="Capa do livro {{ livro.titulo }}">
+                             alt="Capa do livro {{ livro.titulo }}"
+                             onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/sem_capa.jpg') }}';">
                     </div>
                     <!-- Informações -->
                     <div class="col-8">

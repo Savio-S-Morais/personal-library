@@ -85,7 +85,9 @@ def obter_todos_os_livros():
         livro['categorias'] = mapa_categorias.get(id_livro, [])
         
         if isbn:
-            livro['url_capa'] = f"https://covers.openlibrary.org/b/isbn/{isbn}-M.jpg"
+            livro['url_capa'] = (
+                f"https://covers.openlibrary.org/b/isbn/{isbn}-M.jpg?default=false"
+            )
         else:
             livro['url_capa'] = "/static/img/sem_capa.jpg"
                 
