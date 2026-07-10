@@ -2,6 +2,8 @@ from datetime import datetime
 from functools import lru_cache # Adiciona cache para evitar chamadas repetitivas à API
 from app.services.api_planilhas import verificar_planilha_de_trabalho
 from app.services.livro_categoria_service import vincular_livro_categoria
+from app.services.capa_cache_service import carregar_cache, obter_aba_cache
+from app.services.capa_service import obter_capa
 
 @lru_cache(maxsize=128)
 def obter_opcoes_selecao(aba_nome):
@@ -67,6 +69,9 @@ def obter_todos_os_livros():
     livros = aba_livro.get_all_records()
     vinculos = aba_LivroCategoria.get_all_records()
     
+    cache_capas = carregar_cache()
+    aba_cache = obter_aba_cache()
+    
     if not livros:
         return []
     
@@ -81,14 +86,13 @@ def obter_todos_os_livros():
             
     for livro in livros:
         id_livro = livro.get('id_livro')
-        isbn = livro.get('ISBN', '')
+        isbn = livro.get("ISBN", "")
         livro['categorias'] = mapa_categorias.get(id_livro, [])
         
-        if isbn:
-            livro['url_capa'] = (
-                f"https://covers.openlibrary.org/b/isbn/{isbn}-M.jpg?default=false"
-            )
-        else:
-            livro['url_capa'] = "/static/img/sem_capa.jpg"
+        livro['url_capa'] = obter_capa(
+            isbn,
+            cache_capas,
+            aba_cache
+        )
                 
     return livros
