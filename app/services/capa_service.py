@@ -72,7 +72,10 @@ def buscar_google_books(isbn):
             )
 
             if capa:
-                return capa.replace("http://", "https://")
+                return {
+                   "status": "FOUND",
+                   "url": capa.replace("http://", "https://")
+                }
 
             return None
             

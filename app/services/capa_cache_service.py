@@ -36,16 +36,16 @@ def salvar_cache(sheet, cache, isbn, url, fonte, status):
     
     if status == "NOT_FOUND":
         tentar_novamente = (
-            datetime.now() + timedelta(days=15)
+            agora + timedelta(days=15)
         ).strftime("%Y-%m-%d %H:%M:%S")
     elif status == "ERROR":
         tentar_novamente = (
-            datetime.now() + timedelta(hours=12)
+            agora + timedelta(hours=12)
         ).strftime("%Y-%m-%d %H:%M:%S")
     else:
         tentar_novamente = ""
         
-    atualizado_em = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    atualizado_em = agora.strftime("%Y-%m-%d %H:%M:%S")
     
     sheet.append_row([
         isbn,
