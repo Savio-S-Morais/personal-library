@@ -1,9 +1,20 @@
 import unittest
 from unittest.mock import patch, MagicMock
 from datetime import datetime
-from app.services.livro_service import adicionar_livro, obter_opcoes_selecao
+from app.services.livro_service import adicionar_livro, obter_opcoes_selecao, limpar_cache_opcoes
 
 class TestLivroService(unittest.TestCase):
+    def setUp(self):
+        from app import create_app
+        self.app = create_app()
+        self.app.config['TESTING'] = True
+        self.app.config['LOGIN_DISABLED'] = True
+        self.client = self.app.test_client()
+        limpar_cache_opcoes()
+        
+    def tearDown(self):
+        limpar_cache_opcoes()        
+    
     @patch('app.services.livro_service.verificar_planilha_de_trabalho')
     def test_obter_opcoes_selecao_autor(self, mock_verificar_planilha_de_trabalho):
         mock_sheet = MagicMock()

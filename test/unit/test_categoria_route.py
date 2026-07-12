@@ -21,28 +21,35 @@ class TestCategoriaCadastrar(unittest.TestCase):
 
         self.app = create_app()
         self.app.config['TESTING'] = True
+        self.app.config["LOGIN_DISABLED"] = True
         self.client = self.app.test_client()
         
     def tearDown(self):
         self.env.stop()
         
-    @patch('app.routes.cadastrar.cadastrar_categoria')
+    @patch('app.routes.cadastrar.salvar_registro')
     def test_cadastrar_categoria(self, mock_cadastrar_categoria):
         mock_cadastrar_categoria.return_value = (True, 1)
         
         response = self.client.post(
             "/cadastrar/categoria",
-            data={"nome_categoria": "Ficção"}
+            data={
+                "nome_categoria": "Ficção"
+            }
         )
         
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.headers["Location"], "/cadastrar/categoria")
+        mock_cadastrar_categoria.assert_called_once_with(
+            "categoria",
+            { "nome_categoria": "Ficção" }
+        )
     
-    @patch('app.routes.cadastrar.cadastrar_categoria')    
+    @patch('app.routes.cadastrar.salvar_registro')    
     def test_evitar_duplicidade_editora(self, mock_cadastrar_categoria):
         mock_cadastrar_categoria.return_value = (
             False,
-            "Categoria já cadastada"
+            "Categoria já cadastrada"
         )
         
         response = self.client.post(
@@ -53,7 +60,10 @@ class TestCategoriaCadastrar(unittest.TestCase):
         
         self.assertEqual(response.status_code, 200)
         
-        mock_cadastrar_categoria.asset_called_once_with("Ficção")
+        mock_cadastrar_categoria.assert_called_once_with(
+            "categoria",
+            { "nome_categoria": "Ficção" }
+        )
         
         self.assertIn(
             b"Categoria j\xc3\xa1 cadastrada",

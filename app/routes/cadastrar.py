@@ -25,10 +25,12 @@ def formulario(tipo):
         if tipo == 'livro':
             dados['categorias'] = request.form.getlist('categoria[]')
             
-        if salvar_registro(tipo, dados):
+        sucesso, mensagem = salvar_registro(tipo, dados)
+            
+        if sucesso:
             flash(f"{tipo.capitalize()} cadastrado com sucesso!", "success")
         else:
-            flash(f"Erro ao cadastrar {tipo}", "danger")
+            flash(mensagem, "danger")
             
         return redirect(url_for('cadastrar.formulario', tipo=tipo))
     

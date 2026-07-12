@@ -3,13 +3,22 @@ from unittest.mock import patch, MagicMock
 from app.services.editora_service import adicionar_editora
 
 class TestEditoraService(unittest.TestCase):
+    def setUp(self):
+        from app import create_app
+        self.app = create_app()
+        self.app.config['TESTING'] = True
+        self.app.config['LOGIN_DISABLED'] = True
+        self.client = self.app.test_client()
+        
     @patch('app.services.editora_service.verificar_planilha_de_trabalho')
     def test_evitar_duplicididade(self, mock_verificar_planilha_de_trabalho):
         mock_sheet = MagicMock()
         mock_sheet.get_all_records.return_value = [{'id_editora': 1, 'nomeEditora': 'Panini'}]
         mock_verificar_planilha_de_trabalho.return_value = mock_sheet
         
-        sucesso, mensagem = adicionar_editora('Panini')
+        sucesso, mensagem = adicionar_editora(
+            { "nome_editora": 'Panini'}
+        )
         
         self.assertFalse(sucesso)
         self.assertEqual(mensagem, "Editora já cadastrada")
@@ -24,7 +33,9 @@ class TestEditoraService(unittest.TestCase):
         ]
         mock_verificar_planilha_de_trabalho.return_value = mock_sheet
         
-        sucesso, novo_id = adicionar_editora("Nova Editora")
+        sucesso, novo_id = adicionar_editora(
+            { "nome_editora": "Nova Editora"}
+        )
         
         self.assertTrue(sucesso)
         self.assertEqual(novo_id, 3)

@@ -21,12 +21,13 @@ class TestEditoraCadastrar(unittest.TestCase):
         
         self.app = create_app()
         self.app.config['TESTING'] = True
+        self.app.config['LOGIN_DISABLED'] = True
         self.client = self.app.test_client()
         
     def tearDown(self):
         self.env.stop()
         
-    @patch('app.routes.cadastrar.adicionar_editora')
+    @patch('app.routes.cadastrar.salvar_registro')
     def test_adicionar_editora(self, mock_adicionar_editora):
         mock_adicionar_editora.return_value = (True, 1)
         
@@ -38,8 +39,12 @@ class TestEditoraCadastrar(unittest.TestCase):
         # HTTP 302 significa redirecionamento temporario de página
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.headers["Location"], "/cadastrar/editora")
+        mock_adicionar_editora.assert_called_once_with(
+            "editora",
+            { "nome_editora": "Panini" }
+        )
         
-    @patch('app.routes.cadastrar.adicionar_editora')
+    @patch('app.routes.cadastrar.salvar_registro')
     def test_evitar_duplicidade_editora(self, mock_adicionar_editora):
         mock_adicionar_editora.return_value = (
             False,
@@ -54,7 +59,10 @@ class TestEditoraCadastrar(unittest.TestCase):
         
         self.assertEqual(response.status_code, 200)
         
-        mock_adicionar_editora.assert_called_once_with("Panini")
+        mock_adicionar_editora.assert_called_once_with(
+            "editora",
+            {"nome_editora": "Panini"}
+        )
         
         self.assertIn(
             b"Editora j\xc3\xa1 cadastrada",

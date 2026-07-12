@@ -3,6 +3,13 @@ from unittest.mock import patch, MagicMock
 from app.services.categoria_service import adicionar_categoria
 
 class TestCategoriaCadastrar(unittest.TestCase):
+    def setUp(self):
+        from app import create_app
+        self.app = create_app()
+        self.app.config['TESTING'] = True
+        self.app.config['LOGIN_DISABLED'] = True
+        self.client = self.app.test_client()
+        
     @patch('app.services.categoria_service.verificar_planilha_de_trabalho')
     def test_evitar_duplicidade(self, mock_verificar_planilha_de_trabalho):
         # Setup: Mock para retornar um autor já existente
@@ -10,7 +17,9 @@ class TestCategoriaCadastrar(unittest.TestCase):
         mock_sheet.get_all_records.return_value = [{'id_categoria': 1, 'nomeCategoria': 'Ficção'}]
         mock_verificar_planilha_de_trabalho.return_value = mock_sheet
         
-        sucesso, mensagem = adicionar_categoria('Ficção')
+        sucesso, mensagem = adicionar_categoria(
+            { "nome_categoria": "Ficção" }
+        ) 
         
         self.assertFalse(sucesso)
         self.assertEqual(mensagem, "Categoria já cadastrada")
@@ -26,7 +35,9 @@ class TestCategoriaCadastrar(unittest.TestCase):
         ]
         mock_verificar_planilha_de_trabalho.return_value = mock_sheet
         
-        sucesso, novo_id = adicionar_categoria('Nova Categoria')
+        sucesso, novo_id = adicionar_categoria(
+            { "nome_categoria": "Nova Categoria" }
+        )
         
         self.assertTrue(sucesso)
         self.assertEqual(novo_id, 3)

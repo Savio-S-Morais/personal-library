@@ -40,7 +40,6 @@ def create_app():
         
     @login_manager.user_loader
     def load_user(username):
-        print(f"DEBUG: Tentando carregar usuário: {username}")
         user_data = buscar_usuario_por_nome(username)
         if user_data:
             return Usuario(id=user_data['id_user'], nome=user_data['username'])

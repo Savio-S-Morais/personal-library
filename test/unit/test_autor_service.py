@@ -3,7 +3,13 @@ from unittest.mock import patch, MagicMock
 from app.services.autor_service import adicionar_autor
 
 class TestAutorService(unittest.TestCase):
-
+    def setUp(self):
+        from app import create_app
+        self.app = create_app()
+        self.app.config['TESTING'] = True
+        self.app.config['LOGIN_DISABLED'] = True
+        self.client = self.app.test_client()
+        
     @patch('app.services.autor_service.verificar_planilha_de_trabalho')
     def test_evitar_duplicidade(self, mock_verificar_planilha_de_trabalho):
         # Setup: Mock para retornar um autor já existente
@@ -11,7 +17,9 @@ class TestAutorService(unittest.TestCase):
         mock_sheet.get_all_records.return_value = [{'id_autor': 1, 'nomeAutor': 'Eichiro Oda'}]
         mock_verificar_planilha_de_trabalho.return_value = mock_sheet
         
-        sucesso, mensagem = adicionar_autor('Eichiro Oda')
+        sucesso, mensagem = adicionar_autor(
+            { "nome_autor": "Eichiro Oda"}
+        )
         
         self.assertFalse(sucesso)
         self.assertEqual(mensagem, "Autor(a) já cadastrado(a)")
@@ -27,7 +35,9 @@ class TestAutorService(unittest.TestCase):
         ]
         mock_verificar_planilha_de_trabalho.return_value = mock_sheet
         
-        sucesso, novo_id = adicionar_autor('Novo Autor')
+        sucesso, novo_id = adicionar_autor(
+            { "nome_autor": "Novo Autor"}
+        )
         
         self.assertTrue(sucesso)
         self.assertEqual(novo_id, 3)
