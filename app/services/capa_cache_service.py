@@ -9,13 +9,14 @@ def carregar_cache():
     
     cache = {}
     
-    for registro in registros:
+    for indice, registro in enumerate(registros, start=2):
         isbn = str(registro.get("ISBN", "")).strip()
         
         if not isbn:
             continue
         
         cache[isbn] = {
+            "linha": indice,
             "url_capa": registro.get("url_capa"),
             "fonte": registro.get("fonte"),
             "status": registro.get("status"),
@@ -47,16 +48,30 @@ def salvar_cache(sheet, cache, isbn, url, fonte, status):
         
     atualizado_em = agora.strftime("%Y-%m-%d %H:%M:%S")
     
-    sheet.append_row([
+    celula = sheet.find(isbn)
+    
+    valores = [
         isbn,
         url,
         fonte,
         status,
         atualizado_em,
         tentar_novamente
-    ])
+    ]
+    
+    if celula:
+        linha = celula.row
+        
+        sheet.update(
+            f"A{ linha }:F{linha}",
+            [valores]
+        )
+    else:
+        sheet.append_row(valores)
+        linha = len(cache) + 2
     
     cache[isbn] = {
+        "linha": linha,
         "url_capa": url,
         "fonte": fonte,
         "status": status,

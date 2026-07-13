@@ -67,6 +67,7 @@ class TestCapaCacheService(unittest.TestCase):
                        
         cache = {}
         mock_sheet = MagicMock()
+        mock_sheet.find.return_value = None
         salvar_cache(mock_sheet, cache, "123", "", "OpenLibrary", status="NOT_FOUND")
         
         mock_sheet.append_row.assert_called_once_with([
@@ -77,6 +78,8 @@ class TestCapaCacheService(unittest.TestCase):
             "2026-07-12 00:00:00",
             "2026-07-27 00:00:00"
         ])
+        
+        mock_sheet.update.assert_not_called()
         
         
     @patch('app.services.capa_cache_service.datetime')
@@ -90,6 +93,7 @@ class TestCapaCacheService(unittest.TestCase):
                        
         cache = {}
         mock_sheet = MagicMock()
+        mock_sheet.find.return_value = None
         salvar_cache(mock_sheet, cache, "123", "", "OpenLibrary", status="NOT_FOUND")
         
         self.assertEqual(cache["123"]["url_capa"], "")
@@ -105,20 +109,67 @@ class TestCapaCacheService(unittest.TestCase):
         
         cache = {}
         mock_sheet = MagicMock()
+        mock_sheet.find.return_value = None
         salvar_cache(
             mock_sheet,
             cache,
             "123",
             "https://...",
             "OpenLibrary",
-            "SUCCESS"
+            "FOUND"
         )
         
         mock_sheet.append_row.assert_called_once()
-        self.assertEqual(cache["123"]["status"],"SUCCESS")
+        mock_sheet.update.assert_not_called()
+        self.assertEqual(cache["123"]["status"],"FOUND")
         self.assertEqual(cache["123"]["fonte"],"OpenLibrary")
         self.assertEqual(cache["123"]["url_capa"],"https://...")
-        self.assertEqual(cache["123"]["tentar_novamente_em"],"")        
+        self.assertEqual(cache["123"]["tentar_novamente_em"],"")  
+        
+    @patch("app.services.capa_cache_service.datetime")
+    def test_salvar_cache_atualiza_registro_existente(self, mock_datetime):
+        agora = datetime(2026, 7, 12)
+        mock_datetime.now.return_value = agora
+
+        cache = {
+            "123": {
+                "linha": 8,
+                "status": "NOT_FOUND",
+                "url_capa": "",
+                "fonte": "NONE",
+                "atualizado_em": "",
+                "tentar_novamente_em": ""
+            }
+        }
+
+        mock_sheet = MagicMock()
+        celula = MagicMock()
+        celula.row = 8
+        mock_sheet.find.return_value = celula
+
+        salvar_cache(
+            mock_sheet,
+            cache,
+            "123",
+            "https://...",
+            "GoogleBooks",
+            "FOUND"
+        )
+
+        mock_sheet.append_row.assert_not_called()
+        mock_sheet.update.assert_called_once_with(
+            "A8:F8",
+            [[
+                "123",
+                "https://...",
+                "GoogleBooks",
+                "FOUND",
+                "2026-07-12 00:00:00",
+                ""
+            ]]
+        )
+        self.assertEqual(cache["123"]["status"], "FOUND")
+        self.assertEqual(cache["123"]["linha"], 8)      
     
     @patch('app.services.capa_cache_service.datetime')
     def test_salvar_cache_not_found_regra_15_dias(self, mock_datetime):
